@@ -19,7 +19,7 @@ class QuizRepository extends BaseQuizRepository{
   QuizRepository(this._read);
 
   @override
-  Future<List<Question>> getQuestions(@required int numQuestions, @required int categoryId, @required Difficulty difficulty) async{
+  Future<List<Question>> getQuestions({@required int numQuestions, @required int categoryId, @required Difficulty difficulty}) async{
     try{
       final queryParameters = {
         'type' : 'multiple',
