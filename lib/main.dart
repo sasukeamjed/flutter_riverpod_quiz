@@ -10,6 +10,7 @@ import 'package:flutter_riverpod_quiz/models/failure.dart';
 import 'package:flutter_riverpod_quiz/models/question_model.dart';
 import 'package:flutter_riverpod_quiz/repositories/quiz/quiz_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:html_character_entities/html_character_entities.dart';
 
 void main() {
   runApp(MyApp());
@@ -127,7 +128,7 @@ class QuizResults extends StatelessWidget {
           color: Colors.white, fontSize: 60.0, fontWeight: FontWeight.w600,),
           textAlign: TextAlign.center,),
         const SizedBox(height: 40.0,),
-        CustomButton(title: 'New Quiz', onTap: (){
+        CustomButton(title: 'New Quiz', onTap: () {
           context.refresh(quizRepositoryProvider);
           context.read(quizControllerProvider).reset();
         }),
@@ -141,23 +142,72 @@ class QuizQuestions extends StatelessWidget {
   final QuizState state;
   final List<Question> questions;
 
-  const QuizQuestions({Key key, @required this.pageController, @required this.state, @required this.questions}) : super(key: key);
+  const QuizQuestions(
+      {Key key, @required this.pageController, @required this.state, @required this.questions})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
       controller: pageController,
       physics: NeverScrollableScrollPhysics(),
       itemCount: questions.length,
-      itemBuilder: (BuildContext context, int index){
+      itemBuilder: (BuildContext context, int index) {
         final question = questions[index];
         return Column(
-          mainAxisAlignment: ,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Question ${index + 1} of ${questions.length}', style: TextStyle(
+              color: Colors.white,
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
+            ),),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 12.0),
+              child: Text(HtmlCharacterEntities.decode(question.question),
+                style: const TextStyle(color: Colors.white,
+                  fontSize: 28.0,
+                  fontWeight: FontWeight.w500,),),
+            ),
+            Divider(
+              color: Colors.grey[200],
+              height: 32.0,
+              thickness: 2.0,
+              indent: 20.0,
+              endIndent: 20.0,
+            ),
+            Column(
+              children: question.answers.map((e) =>
+                  AnswerCard(answer: e,
+                    isSelected: e == state.selectedAnswer,
+                    isCorrect: e == question.correctAnswer,
+                    isDisplyingAnswer: state.answered,
+                    onTap: () =>
+                        context.read(quizControllerProvider).submitAnswer(
+                            question, e),)),
+            ),
+          ],
         );
       },
     );
   }
 }
 
+class AnswerCard extends StatelessWidget{
+  final String answer;
+  final bool isSelected;
+  final bool isCorrect;
+  final bool isDisplayingAnswer;
+  final VoidCallback onTap;
+
+  const AnswerCard({Key key, @required this.answer, @required this.isSelected, @required this.isCorrect, @required this.isDisplayingAnswer, @required this.onTap}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    
+  }
+}
 
 
 class QuizError extends StatelessWidget {
