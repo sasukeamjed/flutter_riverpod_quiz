@@ -159,6 +159,7 @@ class QuizQuestions extends StatelessWidget {
       itemCount: questions.length,
       itemBuilder: (BuildContext context, int index) {
         final question = questions[index];
+        print('main 162 : question => ${question.question}');
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
